@@ -13,6 +13,12 @@ RxSwift + MVVM 아키텍처 패턴 공부를 위하여 간단하게 개발하는
 |[HeLogger](https://github.com/herohjk/HeLogger)|1.0.0|간단한 자작 로깅 라이브러리|
 |[Then](https://github.com/devxoul/Then)|2.7.0|조금 더 유연한 객체 생성을 도와주는 라이브러리|
 
+## 자료 출처
+|종류|저작자|출처|
+|--|--|--|
+|날씨 관련|[Those-icons](https://www.flaticon.com/authors/those-icons)|[flaticon](https://www.flaticon.com/)|
+|북마크, 메뉴 아이콘|[Freepik](https://www.flaticon.com/authors/freepik)|[flaticon](https://www.flaticon.com)|
+
 
 ## 개발 상황
 
