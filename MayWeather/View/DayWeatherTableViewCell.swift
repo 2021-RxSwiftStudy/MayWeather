@@ -9,18 +9,12 @@ import UIKit
 import SnapKit
 
 class DayWeatherTableViewCell: UITableViewCell {
-    lazy var weekDayLabel = UILabel()
-    lazy var dateLabel = UILabel()
-    lazy var iconImageView = UIImageView()
-    lazy var highTempLabel = UILabel()
-    lazy var slashLabel = UILabel()
-    lazy var minimumTempLabel = UILabel()
-
-//    override func awakeFromNib() {
-//        super.awakeFromNib()
-//        // Initialization code
-//        drawComponents()
-//    }
+    var weekDayLabel = UILabel()
+    var dateLabel = UILabel()
+    var iconImageView = UIImageView()
+    var highTempLabel = UILabel()
+    var slashLabel = UILabel()
+    var minimumTempLabel = UILabel()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

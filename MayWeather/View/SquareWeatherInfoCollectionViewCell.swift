@@ -8,9 +8,9 @@
 import UIKit
 
 class SquareWeatherInfoCollectionViewCell: UICollectionViewCell {
-    lazy var timeLabel = UILabel()
-    lazy var statusIconImageView = UIImageView()
-    lazy var tempLabel = UILabel()
+    var timeLabel = UILabel()
+    var statusIconImageView = UIImageView()
+    var tempLabel = UILabel()
     
     
     override init(frame: CGRect) {

@@ -7,13 +7,19 @@
 
 import UIKit
 import SnapKit
+import RxSwift
 
 class AfterWeekWeatherView: UIView {
     var tableView: UITableView!
+    var heightSubject = BehaviorSubject<Int>(value: 0)
+    var height = 70
+    
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        tableView = UITableView(frame: rect)
+        
+        tableView = UITableView(frame: frame)
         self.addSubview(tableView)
+        
         tableView.register(DayWeatherTableViewCell.self, forCellReuseIdentifier: "weatherCell")
         tableView.delegate = self
         tableView.dataSource = self
@@ -33,7 +39,13 @@ extension AfterWeekWeatherView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 7
+        let count = 7
+        if count * 70 != height {
+            heightSubject.onNext(count)
+            print("\(count) 개 보냄")
+        }
+        
+        return count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -64,6 +76,4 @@ extension AfterWeekWeatherView: UITableViewDelegate, UITableViewDataSource {
         
         return cell
     }
-    
-    
 }

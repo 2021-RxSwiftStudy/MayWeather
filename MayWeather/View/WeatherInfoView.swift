@@ -10,11 +10,11 @@ import SnapKit
 import Then
 
 class WeatherInfoView: UIView {
-    lazy var tempLabel = UILabel()
-    lazy var weatherImageView = UIImageView()
-    lazy var highTempLabel = UILabel()
-    lazy var tempSpaceView = UIView()
-    lazy var minimumTempLabel = UILabel()
+    var tempLabel = UILabel()
+    var weatherImageView = UIImageView()
+    var highTempLabel = UILabel()
+    var tempSpaceView = UIView()
+    var minimumTempLabel = UILabel()
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)

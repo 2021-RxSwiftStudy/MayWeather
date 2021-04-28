@@ -8,20 +8,23 @@
 import UIKit
 import SnapKit
 import Then
+import RxSwift
 
 class ViewController: UIViewController {
-    lazy var infoView = WeatherInfoView()
-    lazy var scrollView = UIScrollView()
-    lazy var stackView = UIStackView()
-    lazy var afterTodayWeatherView = AfterTodayWeatherView()
-    lazy var afterWeekWeatherView = AfterWeekWeatherView()
-    lazy var topView = WeatherInfoTopView()
+    var infoView = WeatherInfoView()
+    var scrollView = UIScrollView()
+    var stackView = UIStackView()
+    var afterTodayWeatherView = AfterTodayWeatherView()
+    var afterWeekWeatherView = AfterWeekWeatherView()
+    var topView = WeatherInfoTopView()
+    var startTime = CFAbsoluteTimeGetCurrent()
+    
+    var disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        startTime = CFAbsoluteTimeGetCurrent()
         view.addSubview(topView)
-        
         topView.snp.makeConstraints {
             if #available(iOS 11, *) {
                 $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
@@ -38,10 +41,8 @@ class ViewController: UIViewController {
         view.addSubview(scrollView)
         
         scrollView.snp.makeConstraints {
-            
             $0.top.equalTo(topView.snp.bottom)
             $0.left.right.bottom.equalToSuperview()
-            
         }
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -53,7 +54,7 @@ class ViewController: UIViewController {
         stackView.addArrangedSubview(infoView)
         
         infoView.snp.makeConstraints {
-            $0.height.equalTo(400)
+            $0.height.equalTo(300)
             $0.width.equalTo(view.snp.width)
         }
         
@@ -89,12 +90,36 @@ class ViewController: UIViewController {
         }
         
         stackView.addArrangedSubview(afterWeekWeatherView)
+        
         afterWeekWeatherView.snp.makeConstraints {
-            $0.width.equalTo(view.snp.width)
-            $0.height.equalTo(490)
+            $0.width.equalTo(self.view.snp.width)
+            $0.height.equalTo(490)// self.afterWeekWeatherView.height)
         }
         
         afterWeekWeatherView.backgroundColor = .clear
+        
+        print("걸린 시간 : \(CFAbsoluteTimeGetCurrent() - startTime)")
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        afterWeekWeatherView.heightSubject.subscribe(onNext: { count in
+            print(count, "개 받음")
+            let height = count * 70
+            if height != self.afterWeekWeatherView.height {
+                self.afterWeekWeatherView.snp.updateConstraints {
+                    $0.height.equalTo(height)
+                }
+
+                self.afterWeekWeatherView.tableView.snp.updateConstraints {
+                    $0.edges.equalToSuperview()
+                }
+
+                self.afterWeekWeatherView.height = height
+                self.afterWeekWeatherView.tableView.reloadData()
+                print(height, "으로 높이 변경")
+                print("걸린 시간: \(CFAbsoluteTimeGetCurrent() - self.startTime)")
+            }
+        }).disposed(by: self.disposeBag)
     }
 }
 

@@ -8,11 +8,11 @@
 import UIKit
 
 class WeatherInfoTopView: UIView {
-    lazy var bookmarkButton = UIButton()
-    lazy var menuButton = UIButton()
+    var bookmarkButton = UIButton()
+    var menuButton = UIButton()
     
-    lazy var cityNameLabel = UILabel()
-    lazy var tempStatusLabel = UILabel()
+    var cityNameLabel = UILabel()
+    var tempStatusLabel = UILabel()
     
     
     override func draw(_ rect: CGRect) {
