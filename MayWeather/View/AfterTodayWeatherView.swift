@@ -6,12 +6,23 @@
 //
 
 import UIKit
+import RxSwift
+import SnapKit
 
 class AfterTodayWeatherView: UIView {
+    var collectionView: UICollectionView!
     
-    var afterWeatherCollectionView: UICollectionView!
+    var todayWeather: TodayWeatherInfo?
     
-    override func draw(_ rect: CGRect) {
+    var disposeBag = DisposeBag()
+    
+    lazy var dateFormatter = DateFormatter().then {
+        $0.dateFormat = "h"
+    }
+    
+    convenience init() {
+        self.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout().then {
             $0.sectionInset = UIEdgeInsets(top: 20, left: 10, bottom: 10, right: 10)
             let height = SquareWeatherInfoCollectionViewCell().size.height
@@ -19,9 +30,8 @@ class AfterTodayWeatherView: UIView {
             $0.scrollDirection = .horizontal
             $0.invalidateLayout()
         }
-        
-        
-        afterWeatherCollectionView = UICollectionView(frame: rect,
+
+        collectionView = UICollectionView(frame: frame,
                                                       collectionViewLayout: layout).then {
                                                         $0.backgroundColor = .clear
                                                         $0.delegate = self
@@ -29,15 +39,24 @@ class AfterTodayWeatherView: UIView {
                                                         $0.showsHorizontalScrollIndicator = false
                                                       }
         
-        afterWeatherCollectionView.register(SquareWeatherInfoCollectionViewCell.self,
+        collectionView.register(SquareWeatherInfoCollectionViewCell.self,
                                             forCellWithReuseIdentifier: "squareCell")
-        self.addSubview(afterWeatherCollectionView)
+        self.addSubview(collectionView)
+        collectionView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        TodayWeatherViewModel.shared.subject.subscribe(onNext: { info in
+            self.todayWeather = info
+            self.collectionView.reloadData()
+        })
+        .disposed(by: disposeBag)
     }
 }
 
 extension AfterTodayWeatherView: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return todayWeather?.list.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -45,30 +64,12 @@ extension AfterTodayWeatherView: UICollectionViewDataSource, UICollectionViewDel
             .dequeueReusableCell(withReuseIdentifier: "squareCell", for: indexPath)
             as! SquareWeatherInfoCollectionViewCell
         
-        switch indexPath.item {
-        case 0:
-            cell.set(time: "12", icon: "sun", temp: "18")
-        case 1:
-            cell.set(time: "1", icon: "sun", temp: "19")
-        case 2:
-            cell.set(time: "2", icon: "cloud", temp: "21")
-        case 3:
-            cell.set(time: "3", icon: "cloud", temp: "20")
-        case 4:
-            cell.set(time: "4", icon: "rain", temp: "16")
-        case 5:
-            cell.set(time: "5", icon: "rain", temp: "16")
-        case 6:
-            cell.set(time: "6", icon: "cloud", temp: "15")
-        case 7:
-            cell.set(time: "7", icon: "moon", temp: "13")
-        case 8:
-            cell.set(time: "8", icon: "moon", temp: "13")
-        case 9:
-            cell.set(time: "9", icon: "cloud", temp: "12")
-        default:
-            break
-        }
+        guard let item = self.todayWeather?.list[indexPath.item] else { return cell }
+        
+        
+        cell.set(time: self.dateFormatter.string(from: item.date),
+                 icon: item.icon,
+                 temp: String(item.temp))
         
         return cell
     }

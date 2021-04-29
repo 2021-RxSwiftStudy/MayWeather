@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct VilageModel: Decodable {
+struct WeatherJsonModel: Decodable {
     let baseDate: String
     let baseTime: String
     let category: String

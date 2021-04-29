@@ -15,26 +15,16 @@ import RxMoya
 final class WeatherAPI: BaseProvider<WeatherProvider> {
     static let shared = WeatherAPI()
     
-    func realTime(lat: Int, lon: Int) {
-        rx.request(.realTime(x: lat, y: lon))
-            .map(WeatherResult<RealTimeModel>.self)
-            .subscribe(onSuccess: { result in
-                print(result.list[0].baseDate, result.list[0].baseTime)
-                for item in result.list {
-                    print(item.category, item.obsrValue)
-                }
-            })
-            .disposed(by: disposeBag)
-    }
-    
-    func weather(lat: Int, lon: Int) {
-        rx.request(.vilage(x: lat, y: lon))
-            .map(WeatherResult<VilageModel>.self)
-            .subscribe(onSuccess: { result in
-                for item in result.list {
-                    print(item.fcstDate, item.fcstTime)
-                    print(item.category, item.fcstValue)
-                }
+    func today(lat: Int, lon: Int,
+               completion: @escaping ([WeatherJsonModel], [WeatherJsonModel]) -> Void) {
+        let realTime = rx.request(.realTime(x: lat, y: lon))
+            .map(WeatherResult<WeatherJsonModel>.self)
+        
+        let today = rx.request(.vilage(x: lat, y: lon))
+            .map(WeatherResult<WeatherJsonModel>.self)
+        Single.zip([realTime, today])
+            .subscribe(onSuccess: { now in
+                completion(now[0].list, now[1].list)
             })
             .disposed(by: disposeBag)
     }

@@ -14,18 +14,16 @@ class AfterWeekWeatherView: UIView {
     var heightSubject = BehaviorSubject<Int>(value: 0)
     var height = 70
     
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
-        
-        tableView = UITableView(frame: frame)
+    convenience init() {
+        self.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        tableView = UITableView(frame: frame).then {
+            $0.register(DayWeatherTableViewCell.self, forCellReuseIdentifier: "weatherCell")
+            $0.delegate = self
+            $0.dataSource = self
+            $0.backgroundColor = .clear
+            $0.showsVerticalScrollIndicator = false
+        }
         self.addSubview(tableView)
-        
-        tableView.register(DayWeatherTableViewCell.self, forCellReuseIdentifier: "weatherCell")
-        tableView.delegate = self
-        tableView.dataSource = self
-        
-        tableView.backgroundColor = .clear
-        tableView.showsVerticalScrollIndicator = false
     }
 }
 
@@ -42,7 +40,6 @@ extension AfterWeekWeatherView: UITableViewDelegate, UITableViewDataSource {
         let count = 7
         if count * 70 != height {
             heightSubject.onNext(count)
-            print("\(count) 개 보냄")
         }
         
         return count

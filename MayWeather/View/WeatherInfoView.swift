@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import Then
+import RxSwift
 
 class WeatherInfoView: UIView {
     var tempLabel = UILabel()
@@ -15,9 +16,10 @@ class WeatherInfoView: UIView {
     var highTempLabel = UILabel()
     var tempSpaceView = UIView()
     var minimumTempLabel = UILabel()
+    var disposeBag = DisposeBag()
     
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
+    convenience init() {
+        self.init(frame: CGRect())
         self.addSubview(tempLabel)
         self.addSubview(weatherImageView)
         self.addSubview(tempSpaceView)
@@ -62,6 +64,14 @@ class WeatherInfoView: UIView {
             $0.left.equalTo(tempSpaceView.snp.right)
             $0.top.equalTo(tempSpaceView.snp.top)
         }
+        
+        TodayWeatherViewModel.shared.subject.subscribe(onNext: { info in
+            self.tempLabel.text = String(info.now.temp) + tempSign
+            self.weatherImageView.image = UIImage(named: info.now.icon)
+            
+            self.highTempLabel.text = "최고:" + String(info.high) + tempSign
+            self.minimumTempLabel.text = "최저: " + String(info.minimum) + tempSign
+        }).disposed(by: disposeBag)
     }
 }
 //

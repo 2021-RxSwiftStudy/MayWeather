@@ -23,6 +23,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         startTime = CFAbsoluteTimeGetCurrent()
         view.addSubview(topView)
         topView.snp.makeConstraints {
@@ -103,7 +104,6 @@ class ViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         afterWeekWeatherView.heightSubject.subscribe(onNext: { count in
-            print(count, "개 받음")
             let height = count * 70
             if height != self.afterWeekWeatherView.height {
                 self.afterWeekWeatherView.snp.updateConstraints {
@@ -120,35 +120,9 @@ class ViewController: UIViewController {
                 print("걸린 시간: \(CFAbsoluteTimeGetCurrent() - self.startTime)")
             }
         }).disposed(by: self.disposeBag)
+        
+        TodayWeatherViewModel.shared.setTodayWeatherInfo()
+        CurrentWeatherViewModel.shared.setWeather()
     }
 }
 
-extension UIColor {
-    static func hex(_ hex: Int) -> UIColor {
-        return UIColor(
-                red: CGFloat((Float((hex & 0xff0000) >> 16)) / 255.0),
-                green: CGFloat((Float((hex & 0x00ff00) >> 8)) / 255.0),
-                blue: CGFloat((Float((hex & 0x0000ff) >> 0)) / 255.0),
-                alpha: 1.0)
-
-    }
-    
-    static var sky = UIColor.hex(0x87CEEB)
-}
-//
-//#if canImport(SwiftUI) && DEBUG
-//import SwiftUI
-//@available(iOS 13.0, *)
-//struct MainVcRepresentble: UIViewRepresentable {
-//    func updateUIView(_ uiView: UIView, context: UIViewRepresentableContext<MainVcRepresentble>) {
-//        print("updateUIView")
-//    }
-//
-//    func makeUIView(context: Context) -> UIView { ViewController().view }
-//
-//}
-//@available(iOS 13.0, *)
-//struct MainVcPreview: PreviewProvider {
-//    static var previews: some View { MainVcRepresentble() }
-//}
-//#endif

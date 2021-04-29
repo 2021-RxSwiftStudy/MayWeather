@@ -27,7 +27,7 @@ extension WeatherProvider: TargetType {
         case .vilage:
             result = "getVilageFcst"
         case .realTime:
-            result = "getUltraSrtNcst"
+            result = "getUltraSrtFcst"
         }
         return result
     }
@@ -65,7 +65,6 @@ extension WeatherProvider: TargetType {
                      "base_time": baseTime,
                      "nx": nx,
                      "ny": ny]
-        print(param)
         return .requestParameters(parameters: param, encoding: URLEncoding.queryString)
     }
     
@@ -131,23 +130,4 @@ fileprivate func getBaseDate(isVilage: Bool) -> (String, String) {
     }
     
     return (baseDate, baseTime)
-}
-
-fileprivate extension Date {
-    static func today(hour: Int = 0, minute: Int = 0, second: Int = 0) -> Date {
-        let newDate = Calendar.current.date(bySettingHour: hour,
-                                            minute: minute,
-                                            second: second,
-                                            of: Date())!
-
-        return Calendar.current.date(byAdding: .hour, value: 9, to: newDate)!
-    }
-    
-    static func kst() -> Date {
-        return Calendar.current.date(byAdding: .hour, value: 9, to: Date())!
-    }
-    
-    func addDay(value: Int) -> Date {
-        return Calendar.current.date(byAdding: .day, value: value, to: self)!
-    }
 }
