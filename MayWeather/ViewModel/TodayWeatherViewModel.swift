@@ -12,7 +12,8 @@ import RxSwift
 
 class TodayWeatherViewModel {
     static let shared = TodayWeatherViewModel()
-    var subject = BehaviorSubject<TodayWeatherInfo>(value: TodayWeatherInfo())
+    var weatherSubject = BehaviorSubject<TodayWeatherInfo>(value: TodayWeatherInfo())
+    var titleSubject = BehaviorSubject<(String, String)>(value: ("", ""))
     
     func setTodayWeatherInfo() {
         guard let asset = NSDataAsset(name: "cityData")
@@ -20,10 +21,12 @@ class TodayWeatherViewModel {
         
         guard let json = try? JSONDecoder().decode([CityInfo].self, from: asset.data)
         else { fatalError("도시정보 불러오기 실패") }
-        let seoul = json.filter { $0.dong == "서울특별시" }
+        let seoul = json.filter { $0.dong == "상암동" }
         
         WeatherAPI.shared.today(lat: seoul[0].location.x, lon: seoul[0].location.y) { now, today in
-            self.subject.onNext(TodayWeatherInfo(weathers: today, now: now))
+            let info = TodayWeatherInfo(weathers: today, now: now)
+            self.weatherSubject.onNext(info)
+            self.titleSubject.onNext(("상암동", info.now.status))
         }
     }
 }

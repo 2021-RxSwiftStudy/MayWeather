@@ -44,7 +44,6 @@
 		D0538398263950AB00CA0491 /* APIKEY.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0538397263950AB00CA0491 /* APIKEY.swift */; };
 		D053839A2639517800CA0491 /* WeatherInfoTopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05383992639517800CA0491 /* WeatherInfoTopView.swift */; };
 		D0C742AF263A27C50053F31A /* WetherInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C742AE263A27C50053F31A /* WetherInfo.swift */; };
-		D0C742B1263A46B50053F31A /* CurrentWeatherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C742B0263A46B50053F31A /* CurrentWeatherViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,7 +99,6 @@
 		D0538397263950AB00CA0491 /* APIKEY.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKEY.swift; sourceTree = "<group>"; };
 		D05383992639517800CA0491 /* WeatherInfoTopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherInfoTopView.swift; sourceTree = "<group>"; };
 		D0C742AE263A27C50053F31A /* WetherInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WetherInfo.swift; sourceTree = "<group>"; };
-		D0C742B0263A46B50053F31A /* CurrentWeatherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeatherViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -218,7 +216,6 @@
 			isa = PBXGroup;
 			children = (
 				D0058FE4263A238900B9A1D0 /* TodayWeatherViewModel.swift */,
-				D0C742B0263A46B50053F31A /* CurrentWeatherViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -254,12 +251,12 @@
 		D05383842638FB5C00CA0491 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				D05383992639517800CA0491 /* WeatherInfoTopView.swift */,
 				D05383852638FBDE00CA0491 /* WeatherInfoView.swift */,
 				D053838D26392BFD00CA0491 /* SquareWeatherInfoCollectionViewCell.swift */,
 				D05383912639324000CA0491 /* AfterTodayWeatherView.swift */,
 				D053839326393DE200CA0491 /* DayWeatherTableViewCell.swift */,
 				D05383952639439500CA0491 /* AfterWeekWeatherView.swift */,
-				D05383992639517800CA0491 /* WeatherInfoTopView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -454,7 +451,6 @@
 				D05383012638EE9500CA0491 /* SceneDelegate.swift in Sources */,
 				D05383462638EEC800CA0491 /* WeatherProvider.swift in Sources */,
 				D05383862638FBDE00CA0491 /* WeatherInfoView.swift in Sources */,
-				D0C742B1263A46B50053F31A /* CurrentWeatherViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

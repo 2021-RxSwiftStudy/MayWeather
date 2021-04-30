@@ -46,7 +46,7 @@ class AfterTodayWeatherView: UIView {
             $0.edges.equalToSuperview()
         }
         
-        TodayWeatherViewModel.shared.subject.subscribe(onNext: { info in
+        TodayWeatherViewModel.shared.weatherSubject.subscribe(onNext: { info in
             self.todayWeather = info
             self.collectionView.reloadData()
         })

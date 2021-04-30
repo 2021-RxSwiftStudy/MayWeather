@@ -17,14 +17,39 @@ class ViewController: UIViewController {
     var afterTodayWeatherView = AfterTodayWeatherView()
     var afterWeekWeatherView = AfterWeekWeatherView()
     var topView = WeatherInfoTopView()
-    var startTime = CFAbsoluteTimeGetCurrent()
     
     var disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        startTime = CFAbsoluteTimeGetCurrent()
+        viewSetup()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        afterWeekWeatherView.heightSubject.subscribe(onNext: { count in
+            let height = count * 70
+            if height != self.afterWeekWeatherView.height {
+                self.afterWeekWeatherView.snp.updateConstraints {
+                    $0.height.equalTo(height)
+                }
+
+                self.afterWeekWeatherView.tableView.snp.updateConstraints {
+                    $0.edges.equalToSuperview()
+                }
+
+                self.afterWeekWeatherView.height = height
+                self.afterWeekWeatherView.tableView.reloadData()
+                print(height, "으로 높이 변경")
+            }
+        }).disposed(by: self.disposeBag)
+        
+        TodayWeatherViewModel.shared.setTodayWeatherInfo()
+    }
+}
+
+extension ViewController {
+    func viewSetup() {
         view.addSubview(topView)
         topView.snp.makeConstraints {
             if #available(iOS 11, *) {
@@ -94,35 +119,9 @@ class ViewController: UIViewController {
         
         afterWeekWeatherView.snp.makeConstraints {
             $0.width.equalTo(self.view.snp.width)
-            $0.height.equalTo(490)// self.afterWeekWeatherView.height)
+            $0.height.equalTo(490)
         }
         
         afterWeekWeatherView.backgroundColor = .clear
-        
-        print("걸린 시간 : \(CFAbsoluteTimeGetCurrent() - startTime)")
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        afterWeekWeatherView.heightSubject.subscribe(onNext: { count in
-            let height = count * 70
-            if height != self.afterWeekWeatherView.height {
-                self.afterWeekWeatherView.snp.updateConstraints {
-                    $0.height.equalTo(height)
-                }
-
-                self.afterWeekWeatherView.tableView.snp.updateConstraints {
-                    $0.edges.equalToSuperview()
-                }
-
-                self.afterWeekWeatherView.height = height
-                self.afterWeekWeatherView.tableView.reloadData()
-                print(height, "으로 높이 변경")
-                print("걸린 시간: \(CFAbsoluteTimeGetCurrent() - self.startTime)")
-            }
-        }).disposed(by: self.disposeBag)
-        
-        TodayWeatherViewModel.shared.setTodayWeatherInfo()
-        CurrentWeatherViewModel.shared.setWeather()
     }
 }
-

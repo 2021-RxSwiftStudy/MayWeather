@@ -65,7 +65,7 @@ class WeatherInfoView: UIView {
             $0.top.equalTo(tempSpaceView.snp.top)
         }
         
-        TodayWeatherViewModel.shared.subject.subscribe(onNext: { info in
+        TodayWeatherViewModel.shared.weatherSubject.subscribe(onNext: { info in
             self.tempLabel.text = String(info.now.temp) + tempSign
             self.weatherImageView.image = UIImage(named: info.now.icon)
             

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RxSwift
 
 class WeatherInfoTopView: UIView {
     var bookmarkButton = UIButton()
@@ -14,6 +15,7 @@ class WeatherInfoTopView: UIView {
     var cityNameLabel = UILabel()
     var tempStatusLabel = UILabel()
     
+    var disposeBag = DisposeBag()
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
@@ -51,5 +53,10 @@ class WeatherInfoTopView: UIView {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(cityNameLabel.snp.bottom).offset(5)
         }
+        
+        TodayWeatherViewModel.shared.titleSubject.subscribe(onNext: { location, state in
+            self.cityNameLabel.text = location
+            self.tempStatusLabel.text = state
+        }).disposed(by: disposeBag)
     }
 }

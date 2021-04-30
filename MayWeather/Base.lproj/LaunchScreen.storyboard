@@ -15,8 +15,19 @@
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mayweather" translatesAutoresizingMaskIntoConstraints="NO" id="scH-cl-ZdV">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                            </imageView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="scH-cl-ZdV" secondAttribute="bottom" id="NwY-st-8QP"/>
+                            <constraint firstItem="scH-cl-ZdV" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="Tso-Uc-IWT"/>
+                            <constraint firstItem="scH-cl-ZdV" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="oPJ-Mn-YwE"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="scH-cl-ZdV" secondAttribute="trailing" id="uFW-af-YtR"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -24,4 +35,7 @@
             <point key="canvasLocation" x="53" y="375"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="mayweather" width="392.66665649414062" height="500.33334350585938"/>
+    </resources>
 </document>

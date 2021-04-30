@@ -80,8 +80,9 @@ struct TodayWeatherInfo {
         
         self.list = list
         
-        let nowHour = String(format: "%02d00", Calendar.current.component(.hour, from: Date()))
-        let nowWeather = now.filter { $0.fcstTime == nowHour }
+        let nowWeather = now.sorted { (Int($0.fcstTime) ?? 0 ) < (Int($1.fcstTime) ?? 0) }// .filter { $0.fcstTime == nowHour }
+        for item in nowWeather { print(item) }
+//        print(nowWeather[0])
         let nowDate = dateFormatter
                 .date(from: "\(nowWeather[0].fcstDate) \(nowWeather[0].fcstTime)")
         let nowTemp = Float((now.filter { $0.category == "T1H" })[0].fcstValue) ?? 0
@@ -101,6 +102,14 @@ struct WeatherInfo {
     let temp: Float
     /// 하늘 상태
     let icon: String
+    /// 하늘 상태
+    var status: String {
+        if icon == "sun" || icon == "moon" { return "맑음 ㅋ" }
+        if icon == "cloud" { return "흐림.." }
+        if icon == "rain" { return "비왕 ㅠ" }
+        if icon == "snow" { return "눈옴!!!ㅋㅋ" }
+        return ""
+    }
 }
 
 fileprivate func setSkyStatus(fcstDate: Date, pty: Int, sky: Int) -> String {
