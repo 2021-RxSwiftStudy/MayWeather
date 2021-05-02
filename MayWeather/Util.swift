@@ -10,22 +10,17 @@ import UIKit
 
 let tempSign = " °C"
 
+let numberFormatter = NumberFormatter()
+
+
 extension UILabel {
     var width: CGFloat {
         return self.intrinsicContentSize.width
     }
     
     var height: CGFloat {
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: frame.width, height: CGFloat.greatestFiniteMagnitude))
-            label.numberOfLines = 0
-            label.lineBreakMode = NSLineBreakMode.byWordWrapping
-            label.font = font
-            label.text = text
-            label.attributedText = attributedText
-            label.sizeToFit()
-            return label.frame.height
-
-    }   
+        return self.font.lineHeight
+    }
 }
 
 extension Date {
@@ -63,4 +58,8 @@ extension UIColor {
     }
     
     static var sky = UIColor.hex(0x87CEEB)
+    static var night = UIColor.hex(0x141852)
+    static var cloud = UIColor.hex(0x92BAD2)
+    static var rain = UIColor.hex(0x1D71F2)
+    static var snow = UIColor.hex(0xE3F4FE)
 }

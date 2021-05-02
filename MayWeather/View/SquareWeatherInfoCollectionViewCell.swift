@@ -31,10 +31,12 @@ class SquareWeatherInfoCollectionViewCell: UICollectionViewCell {
         return CGSize(width: x, height: y)
     }
     
-    func set(time: String, icon: String, temp: String) {
+    func set(time: String, icon: String, temp: String, color: UIColor) {
         timeLabel.text = time + "시"
         statusIconImageView.image = UIImage(named: icon)
         tempLabel.text = temp + tempSign
+        timeLabel.textColor = color
+        tempLabel.textColor = color
     }
 }
 

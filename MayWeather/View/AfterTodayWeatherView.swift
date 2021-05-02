@@ -11,10 +11,9 @@ import SnapKit
 
 class AfterTodayWeatherView: UIView {
     var collectionView: UICollectionView!
-    
-    var todayWeather: TodayWeatherInfo?
-    
     var disposeBag = DisposeBag()
+    var list = [WeatherModel.Hourly]()
+    var textColor: UIColor = .black
     
     lazy var dateFormatter = DateFormatter().then {
         $0.dateFormat = "h"
@@ -24,7 +23,7 @@ class AfterTodayWeatherView: UIView {
         self.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout().then {
-            $0.sectionInset = UIEdgeInsets(top: 20, left: 10, bottom: 10, right: 10)
+            $0.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
             let height = SquareWeatherInfoCollectionViewCell().size.height
             $0.itemSize = CGSize(width: height * 0.6, height: height)
             $0.scrollDirection = .horizontal
@@ -46,9 +45,20 @@ class AfterTodayWeatherView: UIView {
             $0.edges.equalToSuperview()
         }
         
-        TodayWeatherViewModel.shared.weatherSubject.subscribe(onNext: { info in
-            self.todayWeather = info
-            self.collectionView.reloadData()
+        collectionView.dataSource = self
+        collectionView.delegate = self
+    }
+    
+    func subscribe(_ viewModel: WeatherInfoViewModel) {
+        viewModel.todaySubject.subscribe(onNext: { [weak self] today in
+            self?.list = today
+            self?.collectionView.reloadData()
+        })
+        .disposed(by: disposeBag)
+        
+        viewModel.backgroundColorSubject.subscribe(onNext: { [weak self] color in
+            self?.textColor = color == .night ? .white : .black
+            self?.collectionView.reloadData()
         })
         .disposed(by: disposeBag)
     }
@@ -56,7 +66,7 @@ class AfterTodayWeatherView: UIView {
 
 extension AfterTodayWeatherView: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return todayWeather?.list.count ?? 0
+        return list.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -64,26 +74,13 @@ extension AfterTodayWeatherView: UICollectionViewDataSource, UICollectionViewDel
             .dequeueReusableCell(withReuseIdentifier: "squareCell", for: indexPath)
             as! SquareWeatherInfoCollectionViewCell
         
-        guard let item = self.todayWeather?.list[indexPath.item] else { return cell }
+        let item = self.list[indexPath.item]
+        let hour = Calendar.current.component(.hour, from: item.date)
         
         
-        cell.set(time: self.dateFormatter.string(from: item.date),
-                 icon: item.icon,
-                 temp: String(item.temp))
-        
+        cell.set(time: String(hour), icon: item.icon, temp: numberFormatter.string(for: (item.temp - 273.15)) ?? "", color: textColor)
         return cell
     }
     
     
-}
-
-extension AfterTodayWeatherView: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets.zero
-//        if section == 0 {
-//                return UIEdgeInsetsMake(0, 0, 0, 1 * UIScreen.main.scale)
-//            } else {
-//                return UIEdgeInsets.zero
-//            }
-    }
 }

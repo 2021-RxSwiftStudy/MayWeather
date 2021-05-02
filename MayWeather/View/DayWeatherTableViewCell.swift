@@ -28,12 +28,18 @@ class DayWeatherTableViewCell: UITableViewCell {
         drawComponents()
     }
     
-    func set(date: String, weekDay: String, icon: String, high: String, minimum: String) {
+    func set(date: String, weekDay: String, icon: String, high: String, minimum: String, color: UIColor) {
         dateLabel.text = date
         weekDayLabel.text = weekDay
         iconImageView.image = UIImage(named: icon)
         highTempLabel.text = high + tempSign
         minimumTempLabel.text = minimum + tempSign
+        
+        weekDayLabel.textColor = color
+        dateLabel.textColor = color
+        highTempLabel.textColor = color
+        minimumTempLabel.textColor = color
+        slashLabel.textColor = color
     }
 }
 
@@ -47,14 +53,12 @@ extension DayWeatherTableViewCell {
         self.contentView.addSubview(slashLabel)
         self.contentView.addSubview(minimumTempLabel)
         
-        weekDayLabel.text = "수요일"
-        weekDayLabel.font = UIFont(name: "AppleSdGothicNeo-Light", size: 15)
+        weekDayLabel.font = UIFont(name: "AppleSdGothicNeo-Light", size: 16)
         weekDayLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.left.equalTo(dateLabel.snp.right).inset(10)
         }
         
-        dateLabel.text = "04/28"
         dateLabel.font = UIFont(name: "AppleSdGothicNeo-Light", size: 13)
         dateLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview().offset((weekDayLabel.height) * -1)
@@ -84,8 +88,7 @@ extension DayWeatherTableViewCell {
         
         iconImageView.image = UIImage(named: "sun")
         iconImageView.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.right.equalTo(highTempLabel.snp.left).inset(-20)
+            $0.centerY.centerX.equalToSuperview()
             $0.width.height.equalTo(50)
         }
     }

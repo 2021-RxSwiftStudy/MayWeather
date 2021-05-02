@@ -13,6 +13,12 @@ class AfterWeekWeatherView: UIView {
     var tableView: UITableView!
     var heightSubject = BehaviorSubject<Int>(value: 0)
     var height = 70
+    var list = [WeatherModel.Daily]()
+    var disposeBag = DisposeBag()
+    var textColor: UIColor = .black
+    lazy var dateFormatter = DateFormatter().then {
+        $0.dateFormat = "MM/dd"
+    }
     
     convenience init() {
         self.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
@@ -24,6 +30,22 @@ class AfterWeekWeatherView: UIView {
             $0.showsVerticalScrollIndicator = false
         }
         self.addSubview(tableView)
+    }
+    
+    func subscribe(_ viewModel: WeatherInfoViewModel) {
+        viewModel.weeklySubject.subscribe(onNext: { [weak self] weekly in
+            self?.list = weekly
+            if weekly.count > 1 {
+                self?.list.remove(at: 0)
+            }
+            self?.tableView.reloadData()
+        })
+        .disposed(by: disposeBag)
+        viewModel.backgroundColorSubject.subscribe(onNext: { [weak self] color in
+            self?.textColor = color == .night ? .white : .black
+            self?.tableView.reloadData()
+        })
+        .disposed(by: disposeBag)
     }
 }
 
@@ -37,38 +59,40 @@ extension AfterWeekWeatherView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let count = 7
-        if count * 70 != height {
-            heightSubject.onNext(count)
+        if list.count * 70 != height {
+            heightSubject.onNext(list.count)
         }
         
-        return count
+        return list.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView
             .dequeueReusableCell(withIdentifier: "weatherCell")
-        as! DayWeatherTableViewCell
+            as! DayWeatherTableViewCell
         
-        switch indexPath.row {
-        case 0:
-            cell.set(date: "04/29", weekDay: "목요일", icon: "sun", high: "21", minimum: "13")
-        case 1:
-            cell.set(date: "04/30", weekDay: "금요일", icon: "sun", high: "24", minimum: "15")
-        case 2:
-            cell.set(date: "05/01", weekDay: "토요일", icon: "rain", high: "17", minimum: "10")
-        case 3:
-            cell.set(date: "05/02", weekDay: "일요일", icon: "cloud", high: "16", minimum: "9")
-        case 4:
-            cell.set(date: "05/03", weekDay: "월요일", icon: "cloud", high: "16", minimum: "11")
-        case 5:
-            cell.set(date: "05/04", weekDay: "화요일", icon: "sun", high: "18", minimum: "12")
-        case 6:
-            cell.set(date: "05/05", weekDay: "수요일", icon: "sun", high: "21", minimum: "15")
-        default: break
-
+        let item = list[indexPath.row]
+        
+        let date = dateFormatter.string(from: item.date)
+        let weekDay:String
+        switch Calendar.current.component(.weekday, from: item.date) {
+        case 1: weekDay = "일요일"
+        case 2: weekDay = "월요일"
+        case 3: weekDay = "화요일"
+        case 4: weekDay = "수요일"
+        case 5: weekDay = "목요일"
+        case 6: weekDay = "금요일"
+        case 7: weekDay = "토요일"
+        default: weekDay = "알 수 없음"
         }
         
+        
+        cell.set(date: date,
+                 weekDay: weekDay,
+                 icon: item.icon,
+                 high: numberFormatter.string(for: (item.temp.max - 273.15)) ?? "",
+                 minimum: numberFormatter.string(for: (item.temp.min - 273.15)) ?? "",
+                 color: self.textColor)
         cell.backgroundColor = .clear
         
         return cell

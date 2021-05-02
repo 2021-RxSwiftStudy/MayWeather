@@ -19,8 +19,21 @@ RxSwift + MVVM 아키텍처 패턴 공부를 위하여 간단하게 개발하는
 |날씨 관련|[Those-icons](https://www.flaticon.com/authors/those-icons)|[flaticon](https://www.flaticon.com/)|
 |북마크, 메뉴 아이콘|[Freepik](https://www.flaticon.com/authors/freepik)|[flaticon](https://www.flaticon.com)|
 
+## 구현 목표
+* RxSwift를 활용한 네트워크 서비스
+* MVVM 구조
+* Snapkit을 이용한 No Storyboard 개발
+* 위치 기반의 날씨 정보
+* 위치 검색 후 해당 날씨 정보
+* 위치 즐겨찾기
+
+### 날씨 정보
+* 현재 날씨
+* 오늘 최고 기온
+* 오늘 최저기온
+* 현재 하늘 상황
+* 오늘 이후 시각 날씨
+* 오늘 이후 일별 날씨
 
 ## 개발 상황
-
-
-An iOS app project developed simply to study RxSwift and MVVM architectural patterns.
+* 서울 날씨 정보 구현 완료

@@ -28,7 +28,6 @@ class WeatherInfoView: UIView {
         
         
         /// 온도 세팅
-        tempLabel.text = "19.3" + tempSign
         tempLabel.font = UIFont(name: "AppleSdGothicNeo-Medium", size: 40)
         tempLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
@@ -36,7 +35,6 @@ class WeatherInfoView: UIView {
         }
         
         /// 날씨 이미지 세팅
-        weatherImageView.image = UIImage(named: "sun")
         weatherImageView.snp.makeConstraints {
             $0.width.height.equalTo(140)
             $0.centerX.equalToSuperview()
@@ -51,43 +49,34 @@ class WeatherInfoView: UIView {
             $0.width.equalTo(15)
         }
         
-        highTempLabel.text = "최고: 21" + tempSign
+
         highTempLabel.font = UIFont(name: "AppleSdGothicNeo-Light", size: 20)
         highTempLabel.snp.makeConstraints {
             $0.right.equalTo(tempSpaceView.snp.left)
             $0.top.equalTo(tempSpaceView.snp.top)
         }
         
-        minimumTempLabel.text = "최저: 16" + tempSign
         minimumTempLabel.font = UIFont(name: "AppleSdGothicNeo-Light", size: 20)
         minimumTempLabel.snp.makeConstraints {
             $0.left.equalTo(tempSpaceView.snp.right)
             $0.top.equalTo(tempSpaceView.snp.top)
         }
+    }
+    
+    func subscibe(_ viewModel: WeatherInfoViewModel) {
+        viewModel.currentSubject.subscribe(onNext: { [weak self] (current, min, max) in
+            self?.tempLabel.text = "\(numberFormatter.string(for: (current.temp - 273.15)) ?? "")\(tempSign)"
+            self?.highTempLabel.text = "\(numberFormatter.string(for: (max - 273.15)) ?? "")\(tempSign)"
+            self?.minimumTempLabel.text = "\(numberFormatter.string(for: (min - 273.15)) ?? "")\(tempSign)"
+            self?.weatherImageView.image = UIImage(named: current.icon)
+        })
+        .disposed(by: disposeBag)
         
-        TodayWeatherViewModel.shared.weatherSubject.subscribe(onNext: { info in
-            self.tempLabel.text = String(info.now.temp) + tempSign
-            self.weatherImageView.image = UIImage(named: info.now.icon)
-            
-            self.highTempLabel.text = "최고:" + String(info.high) + tempSign
-            self.minimumTempLabel.text = "최저: " + String(info.minimum) + tempSign
-        }).disposed(by: disposeBag)
+        viewModel.backgroundColorSubject.subscribe(onNext: { [weak self] color in
+            self?.tempLabel.textColor = color == .night ? .white : .black
+            self?.highTempLabel.textColor = color == .night ? .white : .black
+            self?.minimumTempLabel.textColor = color == .night ? .white : .black
+        })
+        .disposed(by: disposeBag)
     }
 }
-//
-//#if canImport(SwiftUI) && DEBUG
-//import SwiftUI
-//@available(iOS 13.0, *)
-//struct MainVcRepresentble: UIViewRepresentable {
-//    func updateUIView(_ uiView: UIView, context: UIViewRepresentableContext<MainVcRepresentble>) {
-//        print("updateUIView")
-//    }
-//
-//    func makeUIView(context: Context) -> UIView { WeatherInfoView() }
-//
-//}
-//@available(iOS 13.0, *)
-//struct MainVcPreview: PreviewProvider {
-//    static var previews: some View { MainVcRepresentble() }
-//}
-//#endif

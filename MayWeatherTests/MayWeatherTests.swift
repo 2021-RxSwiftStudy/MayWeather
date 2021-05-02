@@ -19,8 +19,7 @@ class MayWeatherTests: XCTestCase {
     }
 
     func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        WeatherAPI.shared.weather(lat: <#T##Int#>, lon: <#T##Int#>)
     }
 
     func testPerformanceExample() throws {

@@ -17,12 +17,15 @@ class ViewController: UIViewController {
     var afterTodayWeatherView = AfterTodayWeatherView()
     var afterWeekWeatherView = AfterWeekWeatherView()
     var topView = WeatherInfoTopView()
-    
+
     var disposeBag = DisposeBag()
+    
+    var viewModel = WeatherInfoViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        numberFormatter.minimumFractionDigits = 0
+        numberFormatter.maximumFractionDigits = 1
         viewSetup()
     }
     
@@ -40,11 +43,10 @@ class ViewController: UIViewController {
 
                 self.afterWeekWeatherView.height = height
                 self.afterWeekWeatherView.tableView.reloadData()
-                print(height, "으로 높이 변경")
             }
         }).disposed(by: self.disposeBag)
         
-        TodayWeatherViewModel.shared.setTodayWeatherInfo()
+        viewModel.setWeather(city: "서울시", lat: 37.413294, lon: 126.734086)
     }
 }
 
@@ -61,6 +63,7 @@ extension ViewController {
             let height = 70
             $0.height.equalTo(height)
         }
+        topView.subscribe(self.viewModel)
         
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.showsVerticalScrollIndicator = false
@@ -83,10 +86,8 @@ extension ViewController {
             $0.height.equalTo(300)
             $0.width.equalTo(view.snp.width)
         }
-        
-        
         infoView.backgroundColor = .clear
-        self.view.backgroundColor = .sky
+        infoView.subscibe(self.viewModel)
         
         let lineView1 = UIView().then {
             $0.backgroundColor = .white
@@ -101,9 +102,10 @@ extension ViewController {
         stackView.addArrangedSubview(afterTodayWeatherView)
         afterTodayWeatherView.snp.makeConstraints {
             $0.width.equalTo(view.snp.width)
-            $0.height.equalTo(SquareWeatherInfoCollectionViewCell().size.height)
+            $0.height.equalTo(140)
         }
         afterTodayWeatherView.backgroundColor = .clear
+        afterTodayWeatherView.subscribe(self.viewModel)
         
         let lineView2 = UIView().then {
             $0.backgroundColor = .white
@@ -116,12 +118,12 @@ extension ViewController {
         }
         
         stackView.addArrangedSubview(afterWeekWeatherView)
-        
-        afterWeekWeatherView.snp.makeConstraints {
-            $0.width.equalTo(self.view.snp.width)
-            $0.height.equalTo(490)
-        }
-        
+
         afterWeekWeatherView.backgroundColor = .clear
+        afterWeekWeatherView.subscribe(self.viewModel)
+        
+        viewModel.backgroundColorSubject.subscribe(onNext: {[weak self] color in
+            self?.view.backgroundColor = color
+        }).disposed(by: self.disposeBag)
     }
 }

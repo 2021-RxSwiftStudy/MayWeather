@@ -17,8 +17,11 @@ class WeatherInfoTopView: UIView {
     
     var disposeBag = DisposeBag()
     
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
+//    var cityInfoSubject: WeatherInfoViewModel!
+    
+    convenience init() {
+        self.init(frame: CGRect())
+        
         self.addSubview(bookmarkButton)
         self.addSubview(menuButton)
         self.addSubview(cityNameLabel)
@@ -39,7 +42,6 @@ class WeatherInfoTopView: UIView {
         }
         
         /// 도시 이름 세팅
-        cityNameLabel.text = "서울"
         cityNameLabel.font = UIFont(name: "AppleSdGothicNeo-Medium", size: 30)
         cityNameLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
@@ -47,16 +49,23 @@ class WeatherInfoTopView: UIView {
         }
         
         /// 요약 세팅
-        tempStatusLabel.text = "맑음 ㅋ"
         tempStatusLabel.font = UIFont(name: "AppleSdGothicNeo-Light", size: 20)
         tempStatusLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(cityNameLabel.snp.bottom).offset(5)
         }
-        
-        TodayWeatherViewModel.shared.titleSubject.subscribe(onNext: { location, state in
-            self.cityNameLabel.text = location
-            self.tempStatusLabel.text = state
-        }).disposed(by: disposeBag)
+    }
+    
+    func subscribe(_ viewModel: WeatherInfoViewModel) {
+        viewModel.cityInfoSubject.subscribe(onNext: { [weak self] (city, state) in
+            self?.cityNameLabel.text = city
+            self?.tempStatusLabel.text = state
+        })
+        .disposed(by: disposeBag)
+        viewModel.backgroundColorSubject.subscribe(onNext: { [weak self] color in
+            self?.cityNameLabel.textColor = color == .night ? .white : .black
+            self?.tempStatusLabel.textColor = color == .night ? .white : .black
+        })
+        .disposed(by: disposeBag)
     }
 }
